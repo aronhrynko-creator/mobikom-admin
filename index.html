@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0B1B24">
+<title>MOBIKOM · Адмінка магазину</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23319ED9'/%3E%3Ctext x='16' y='22' font-size='16' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23fff'%3EM%3C/text%3E%3C/svg%3E">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#EAEAEA;--card:#fff;--ink:#0B1B24;--mut:#5f6b73;--hair:#d6dade;--acc:#319ED9;--ok:#1f9d55;--bad:#d64545;--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#0B1B24;--card:#12262f;--ink:#EAEAEA;--mut:#93a3ad;--hair:#22404d}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.hide{display:none!important}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
+header .wrap{display:flex;align-items:center;gap:12px;height:58px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
+.logo i{width:30px;height:30px;border-radius:8px;background:var(--acc);color:#fff;display:grid;place-items:center;font-style:normal}
+.sp{flex:1}
+.lnk{color:var(--mut);font-size:14px;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600;white-space:nowrap}
+.btn.acc{background:var(--acc);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hair)}
+.btn.sm{height:36px;padding:0 12px;font-size:14px;border-radius:10px}
+.btn.bad{color:var(--bad)}
+input,select,textarea{width:100%;background:var(--card);border:1px solid var(--hair);border-radius:10px;padding:10px 12px;min-height:44px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px}
+h1{font-size:22px;margin:22px 0 4px}.sub{color:var(--mut);margin-bottom:14px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:14px 0}
+.chip{height:36px;padding:0 14px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--hair);font-size:14px;white-space:nowrap;color:var(--mut)}
+.chip.on{background:var(--ink);color:var(--bg);box-shadow:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.p{background:var(--card);border-radius:var(--r);box-shadow:0 0 0 1px var(--hair);overflow:hidden;display:flex;flex-direction:column}
+.p.off{opacity:.55}
+.p .ph{aspect-ratio:1;background:var(--hair) center/cover no-repeat}
+.p .b{padding:12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.p h3{font-size:16px}.p .m{font-size:13px;color:var(--mut)}.p .pr{font-weight:700;font-size:17px;margin-top:4px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--mut)}
+.tag.no{background:#fde8e8;color:var(--bad)}
+.p .act{display:flex;gap:6px;margin-top:8px}
+.add{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:30;height:54px;padding:0 22px;border-radius:999px;background:var(--acc);color:#fff;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+dialog{border:0;border-radius:18px;padding:0;width:min(520px,94vw);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog form{padding:18px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prev{width:100%;aspect-ratio:1;border-radius:12px;background:var(--bg) center/cover no-repeat;margin-top:8px;display:grid;place-items:center;color:var(--mut);font-size:14px}
+.sw{display:flex;align-items:center;gap:10px;margin-top:14px}.sw input{width:22px;height:22px;min-height:0}
+.foot{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.err{color:var(--bad);font-size:14px;margin-top:10px;min-height:20px}
+.card{background:var(--card);border-radius:18px;box-shadow:0 0 0 1px var(--hair);padding:22px;max-width:420px;margin:60px auto}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:50;max-width:90vw}
+.empty{padding:40px 10px;text-align:center;color:var(--mut)}
+</style>
+</head>
+<body>
+<div id="login" class="hide"><div class="wrap"><div class="card">
+  <div class="logo"><i>M</i>MOBIKOM · адмінка</div>
+  <form id="lf"><label>E-mail</label><input id="le" type="email" autocomplete="username" required>
+    <label>Пароль</label><input id="lp" type="password" autocomplete="current-password" required>
+    <div class="foot" style="justify-content:space-between"><button type="button" class="lnk" id="fp">Забули пароль?</button><button class="btn acc">Увійти</button></div>
+    <div class="err" id="lerr"></div></form>
+  <form id="pf" class="hide"><label>Новий пароль (мінімум 8 символів)</label><input id="np" type="password" autocomplete="new-password" required>
+    <div class="foot"><button class="btn acc">Зберегти пароль</button></div><div class="err" id="perr"></div></form>
+  <p class="sub" style="margin-top:14px;font-size:13px">Немає доступу? <button type="button" class="lnk" id="demo" style="text-decoration:underline">Подивитися демо</button></p>
+</div></div></div>
+
+<div id="app" class="hide">
+<header><div class="wrap"><div class="logo"><i>M</i>MOBIKOM</div><div class="sp"></div>
+  <a class="lnk" id="site" target="_blank" rel="noopener">Сайт ↗</a><button class="btn ghost sm" id="out">Вийти</button></div></header>
+<main class="wrap">
+  <h1>Товари магазину</h1>
+  <p class="sub">Додавайте айфони й аксесуари — вони одразу з'являються на сайті в розділі «Магазин».</p>
+  <div class="chips" id="cats"></div>
+  <div class="grid" id="list"></div>
+</main>
+<button class="add" id="addb">+ Додати товар</button>
+</div>
+
+<dialog id="dlg"><form id="f" method="dialog">
+  <h2 id="dt" style="font-size:19px">Новий товар</h2>
+  <label>Категорія</label><select id="fc"></select>
+  <label>Назва</label><input id="ft" maxlength="80" placeholder="iPhone 13 Pro" required>
+  <div class="row"><div><label>Пам'ять</label><input id="fm" maxlength="20" placeholder="128 GB"></div>
+  <div><label>Стан</label><select id="fs"><option value="new">Новий</option><option value="used">Б/в</option></select></div></div>
+  <div class="row"><div><label>Ціна, грн</label><input id="fp2" type="number" min="0" step="1" inputmode="numeric" placeholder="18 500"></div>
+  <div><label>Коротко (необов'язково)</label><input id="fn" maxlength="160" placeholder="батарея 89%, гарантія 3 міс."></div></div>
+  <label>Фото</label><input id="fph" type="file" accept="image/*"><div class="prev" id="pv">Немає фото</div>
+  <label class="sw"><input type="checkbox" id="fi" checked> В наявності</label>
+  <label class="sw"><input type="checkbox" id="fv" checked> Показувати на сайті</label>
+  <div class="err" id="ferr"></div>
+  <div class="foot"><button type="button" class="btn ghost bad hide" id="del">Видалити</button><div class="sp"></div><button type="button" class="btn ghost" id="cancel">Скасувати</button><button type="submit" class="btn acc" id="save">Зберегти</button></div>
+</form></dialog>
+
+<script>
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const C = window.SHOP_CONFIG || {}, SHOP = C.shop || 'mobikom', DEMO = !C.url || sessionStorage.getItem('demo') === '1';
+const CATS = { iphone: 'iPhone', glass: 'Скло й чохли', cables: 'Кабелі й зарядки', gadgets: 'Гаджети' };
+$('#fc').innerHTML = Object.entries(CATS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
+if (C.siteUrl) $('#site').href = C.siteUrl; else $('#site').classList.add('hide');
+const sb = DEMO ? demoClient() : supabase.createClient(C.url, C.key);
+function demoClient() {
+  let db = [
+    { id: 3, category: 'iphone', title: 'iPhone 14', memory: '128 GB', condition: 'used', price: 21500, note: 'батарея 91%, гарантія 3 міс.', photo: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop1.webp', in_stock: true, visible: true, sort: 0 },
+    { id: 2, category: 'iphone', title: 'iPhone 13 Pro', memory: '256 GB', condition: 'used', price: 24900, note: 'ідеальний стан', photo: null, in_stock: false, visible: true, sort: 0 },
+    { id: 1, category: 'glass', title: 'Захисне скло 3D', memory: null, condition: 'new', price: 350, note: 'клеїмо безкоштовно', photo: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop2.webp', in_stock: true, visible: true, sort: 0 }];
+  const q = () => { let patch = null, del = false; const o = {
+    select: () => o, order: () => o, limit: async () => ({ data: db.map(r => ({ ...r })) }),
+    eq: (k, v) => { if (!patch && !del) return o; if (del) db = db.filter(r => r[k] !== v); else db.filter(r => r[k] === v).forEach(r => Object.assign(r, patch)); return Promise.resolve({}); },
+    update: p => { patch = p; return o; }, delete: () => { del = true; return o; },
+    insert: async r => { db.unshift({ id: Date.now(), ...r }); return {}; } }; return o; };
+  return { auth: { getSession: async () => ({ data: { session: { demo: 1 } } }), signOut: async () => sessionStorage.removeItem('demo'), signInWithPassword: async () => ({}), updateUser: async () => ({}), resetPasswordForEmail: async () => ({}) },
+    from: q, storage: { from: () => ({ upload: async () => ({}), getPublicUrl: () => ({ data: { publicUrl: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop4.webp' } }) }) } };
+}
+function toast(t) { document.querySelectorAll('.toast').forEach(x => x.remove()); const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.append(d); setTimeout(() => d.remove(), 2600); }
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// ---------- auth ----------
+const setPw = /type=(invite|recovery)/.test(location.hash);
+async function boot() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (setPw && session) { $('#login').classList.remove('hide'); $('#lf').classList.add('hide'); $('#pf').classList.remove('hide'); return; }
+  $('#login').classList.toggle('hide', !!session); $('#app').classList.toggle('hide', !session);
+  if (session) load();
+}
+$('#lf').onsubmit = async e => { e.preventDefault(); $('#lerr').textContent = '';
+  const { error } = await sb.auth.signInWithPassword({ email: $('#le').value.trim(), password: $('#lp').value });
+  if (error) $('#lerr').textContent = 'Невірний e-mail або пароль'; else boot(); };
+$('#pf').onsubmit = async e => { e.preventDefault(); const pw = $('#np').value;
+  if (pw.length < 8) return $('#perr').textContent = 'Мінімум 8 символів';
+  const { error } = await sb.auth.updateUser({ password: pw });
+  if (error) return $('#perr').textContent = 'Помилка: ' + error.message;
+  history.replaceState(null, '', location.pathname); location.reload(); };
+$('#fp').onclick = async () => { const em = $('#le').value.trim(); if (!em) return $('#lerr').textContent = 'Спочатку введіть e-mail';
+  await sb.auth.resetPasswordForEmail(em, { redirectTo: location.origin + location.pathname });
+  $('#lerr').style.color = 'var(--ok)'; $('#lerr').textContent = 'Якщо такий e-mail є — на нього прийшов лист із посиланням'; };
+$('#demo').onclick = () => { sessionStorage.setItem('demo', '1'); location.reload(); };
+$('#out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+if (DEMO) { const b = document.createElement('div'); b.style.cssText = 'background:var(--acc);color:#fff;text-align:center;font-size:13.5px;font-weight:600;padding:8px 12px'; b.textContent = 'Демо-режим: тестові дані, зміни не зберігаються'; $('#app').prepend(b); }
+
+// ---------- list ----------
+let P = [], cat = 'all', editing = null, photoBlob = null;
+async function load() {
+  const { data, error } = await sb.from('products').select('*').eq('shop', SHOP).order('sort').limit(1000);
+  if (error) return toast('Помилка завантаження: ' + error.message);
+  P = data || []; render();
+}
+function render() {
+  const counts = P.reduce((a, p) => (a[p.category] = (a[p.category] || 0) + 1, a), {});
+  $('#cats').innerHTML = [['all', 'Усі', P.length], ...Object.entries(CATS).map(([k, v]) => [k, v, counts[k] || 0])]
+    .map(([k, v, n]) => `<button class="chip ${k === cat ? 'on' : ''}" data-c="${k}">${v} · ${n}</button>`).join('');
+  $$('#cats .chip').forEach(b => b.onclick = () => { cat = b.dataset.c; render(); });
+  const rows = P.filter(p => cat === 'all' || p.category === cat);
+  $('#list').innerHTML = rows.length ? rows.map(p => `<div class="p ${p.visible ? '' : 'off'}">
+    <div class="ph" style="${p.photo ? `background-image:url('${esc(p.photo)}')` : ''}"></div>
+    <div class="b"><h3>${esc(p.title)}</h3>
+      <div class="m">${[p.memory, p.condition === 'used' ? 'б/в' : 'новий', CATS[p.category]].filter(Boolean).map(esc).join(' · ')}</div>
+      ${p.note ? `<div class="m">${esc(p.note)}</div>` : ''}
+      <div class="pr">${p.price != null ? Number(p.price).toLocaleString('uk-UA') + ' грн' : 'Ціна за запитом'}</div>
+      <div>${p.in_stock ? '<span class="tag">в наявності</span>' : '<span class="tag no">немає</span>'} ${p.visible ? '' : '<span class="tag">прихований</span>'}</div>
+      <div class="act"><button class="btn sm ghost" data-e="${p.id}">Змінити</button><button class="btn sm ghost" data-s="${p.id}">${p.in_stock ? 'Продано' : 'Є в наявності'}</button></div>
+    </div></div>`).join('') : '<div class="empty">Тут поки порожньо. Натисніть «+ Додати товар».</div>';
+  $$('[data-e]').forEach(b => b.onclick = () => open(P.find(p => p.id == b.dataset.e)));
+  $$('[data-s]').forEach(b => b.onclick = async () => { const p = P.find(x => x.id == b.dataset.s);
+    const { error } = await sb.from('products').update({ in_stock: !p.in_stock }).eq('id', p.id);
+    if (error) return toast('Не вдалося: ' + error.message); p.in_stock = !p.in_stock; render(); toast('Збережено'); });
+}
+
+// ---------- form ----------
+function open(p) {
+  editing = p || null; photoBlob = null; $('#ferr').textContent = '';
+  $('#dt').textContent = p ? 'Змінити товар' : 'Новий товар'; $('#del').classList.toggle('hide', !p);
+  $('#fc').value = p?.category || (cat !== 'all' ? cat : 'iphone'); $('#ft').value = p?.title || ''; $('#fm').value = p?.memory || '';
+  $('#fs').value = p?.condition || 'new'; $('#fp2').value = p?.price ?? ''; $('#fn').value = p?.note || '';
+  $('#fi').checked = p ? p.in_stock : true; $('#fv').checked = p ? p.visible : true; $('#fph').value = '';
+  setPrev(p?.photo); $('#dlg').showModal();
+}
+function setPrev(u) { const pv = $('#pv'); pv.style.backgroundImage = u ? `url('${u}')` : ''; pv.textContent = u ? '' : 'Немає фото'; }
+async function shrink(file) {
+  const img = await createImageBitmap(file), k = Math.min(1, 1400 / Math.max(img.width, img.height));
+  const cv = document.createElement('canvas'); cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+  cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+  return new Promise(r => cv.toBlob(r, 'image/webp', .82));
+}
+$('#fph').onchange = async e => { const f = e.target.files[0]; if (!f) return; photoBlob = await shrink(f); setPrev(URL.createObjectURL(photoBlob)); };
+$('#addb').onclick = () => open(null);
+$('#cancel').onclick = () => $('#dlg').close();
+$('#f').onsubmit = async e => {
+  e.preventDefault(); $('#save').disabled = true; $('#ferr').textContent = '';
+  try {
+    let photo = editing?.photo || null;
+    if (photoBlob) {
+      const path = SHOP + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 7) + '.webp';
+      const { error } = await sb.storage.from('products').upload(path, photoBlob, { contentType: 'image/webp', cacheControl: '31536000' });
+      if (error) throw error; photo = sb.storage.from('products').getPublicUrl(path).data.publicUrl;
+    }
+    const row = { shop: SHOP, category: $('#fc').value, title: $('#ft').value.trim(), memory: $('#fm').value.trim() || null, condition: $('#fs').value,
+      price: $('#fp2').value === '' ? null : Math.round(+$('#fp2').value), note: $('#fn').value.trim() || null, photo,
+      in_stock: $('#fi').checked, visible: $('#fv').checked };
+    const { error } = editing ? await sb.from('products').update(row).eq('id', editing.id) : await sb.from('products').insert(row);
+    if (error) throw error;
+    $('#dlg').close(); toast('Збережено — вже на сайті'); load();
+  } catch (err) { $('#ferr').textContent = 'Не вдалося: ' + (err.message || err); }
+  $('#save').disabled = false;
+};
+$('#del').onclick = async () => { if (!editing || !confirm('Видалити «' + editing.title + '»?')) return;
+  const { error } = await sb.from('products').delete().eq('id', editing.id);
+  if (error) return $('#ferr').textContent = 'Не вдалося: ' + error.message; $('#dlg').close(); toast('Видалено'); load(); };
+boot();
+</script>
+</body>
+</html>
