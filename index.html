@@ -5,121 +5,253 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0B1B24">
-<title>MOBIKOM · Адмінка магазину</title>
+<title>MOBIKOM · Адмінка</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23319ED9'/%3E%3Ctext x='16' y='22' font-size='16' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23fff'%3EM%3C/text%3E%3C/svg%3E">
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--bg:#EAEAEA;--card:#fff;--ink:#0B1B24;--mut:#5f6b73;--hair:#d6dade;--acc:#319ED9;--ok:#1f9d55;--bad:#d64545;--r:14px}
-@media (prefers-color-scheme:dark){:root{--bg:#0B1B24;--card:#12262f;--ink:#EAEAEA;--mut:#93a3ad;--hair:#22404d}}
+:root{--bg:#EAEAEA;--card:#fff;--ink:#141517;--mut:#6b6e74;--hair:#e3e3df;--acc:#319ED9;--acc-ink:#fff;--ok:#1f9d55;--warn:#d97706;--bad:#d64545;--blue:#2563eb;--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#0B1B24;--card:#12262f;--ink:#f2f2f0;--mut:#9a9da3;--hair:#2a2c30}}
 *{box-sizing:border-box;margin:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
-.hide{display:none!important}
-.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
 header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
 header .wrap{display:flex;align-items:center;gap:12px;height:58px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
-.logo i{width:30px;height:30px;border-radius:8px;background:var(--acc);color:#fff;display:grid;place-items:center;font-style:normal}
+.logo i{width:30px;height:30px;border-radius:8px;background:var(--acc);color:var(--acc-ink);display:grid;place-items:center;font-style:normal;font-size:15px}
 .sp{flex:1}
 .lnk{color:var(--mut);font-size:14px;text-decoration:none}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600;white-space:nowrap}
-.btn.acc{background:var(--acc);color:#fff}
+.btn.acc{background:var(--acc);color:var(--acc-ink)}
 .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hair)}
 .btn.sm{height:36px;padding:0 12px;font-size:14px;border-radius:10px}
-.btn.bad{color:var(--bad)}
+.btn:disabled{opacity:.5}
 input,select,textarea{width:100%;background:var(--card);border:1px solid var(--hair);border-radius:10px;padding:10px 12px;min-height:44px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+input:focus,select:focus,textarea:focus{border-color:var(--ink)}
+textarea{resize:vertical;min-height:70px}
 label{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px}
-h1{font-size:22px;margin:22px 0 4px}.sub{color:var(--mut);margin-bottom:14px}
-.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:14px 0}
-.chip{height:36px;padding:0 14px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--hair);font-size:14px;white-space:nowrap;color:var(--mut)}
-.chip.on{background:var(--ink);color:var(--bg);box-shadow:none}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.p{background:var(--card);border-radius:var(--r);box-shadow:0 0 0 1px var(--hair);overflow:hidden;display:flex;flex-direction:column}
-.p.off{opacity:.55}
-.p .ph{aspect-ratio:1;background:var(--hair) center/cover no-repeat}
-.p .b{padding:12px;display:flex;flex-direction:column;gap:4px;flex:1}
-.p h3{font-size:16px}.p .m{font-size:13px;color:var(--mut)}.p .pr{font-weight:700;font-size:17px;margin-top:4px}
-.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--mut)}
-.tag.no{background:#fde8e8;color:var(--bad)}
-.p .act{display:flex;gap:6px;margin-top:8px}
-.add{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:30;height:54px;padding:0 22px;border-radius:999px;background:var(--acc);color:#fff;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-dialog{border:0;border-radius:18px;padding:0;width:min(520px,94vw);background:var(--card);color:var(--ink)}
-dialog::backdrop{background:rgba(0,0,0,.45)}
-dialog form{padding:18px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.stat{background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:0 0 0 1px var(--hair)}
+.stat b{display:block;font-size:24px;letter-spacing:-.02em}
+.stat span{font-size:13px;color:var(--mut)}
+.tabs{display:flex;gap:6px;margin:6px 0 16px;overflow-x:auto;scrollbar-width:none}
+.tabs button{height:40px;padding:0 16px;border-radius:999px;color:var(--mut);font-weight:600;white-space:nowrap}
+.tabs button.on{background:var(--ink);color:var(--bg)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.bar input{flex:1;min-width:180px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
+.chip{height:34px;padding:0 12px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--hair);font-size:14px;white-space:nowrap;color:var(--mut)}
+.chip.on{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.chip em{font-style:normal;opacity:.6;margin-left:4px}
+.list{display:grid;gap:10px}
+.req{background:var(--card);border-radius:var(--r);box-shadow:0 0 0 1px var(--hair);padding:14px 16px;border-left:4px solid var(--hair)}
+.req[data-s=new]{border-left-color:var(--bad)}.req[data-s=called]{border-left-color:var(--warn)}.req[data-s=in_work]{border-left-color:var(--blue)}.req[data-s=done]{border-left-color:var(--ok)}.req[data-s=cancel]{opacity:.6}
+.req .top{display:flex;gap:10px;align-items:flex-start}
+.req h3{font-size:16px}
+.req .meta{font-size:13px;color:var(--mut);margin-top:2px}
+.req .det{display:flex;flex-wrap:wrap;gap:6px 14px;margin:10px 0;font-size:14px}
+.req .det span{color:var(--mut)}
+.req .cm{background:var(--bg);border-radius:10px;padding:8px 10px;font-size:14px;margin-bottom:10px;white-space:pre-wrap}
+.hello{margin:18px 0 10px;padding:16px 18px;border-radius:var(--r);background:var(--card);box-shadow:0 0 0 1px var(--hair);font-size:16px;color:var(--mut)}
+.hello.on{background:var(--acc);color:var(--acc-ink);box-shadow:none;font-weight:600}.hello b{font-size:20px}
+.req h3{font-size:18px}.req .what{font-size:15px;margin-top:4px;font-weight:600}.req .cm{margin:8px 0 0}.req .meta{margin-top:8px}
+.req .paid{margin-top:8px;font-weight:700;color:var(--ok)}
+.req .go{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.req .go .btn{height:52px;font-size:15.5px;padding:0 10px}.req .go .btn:only-child{grid-column:1/-1}
+.btn.ok{background:var(--ok);color:#fff}a.btn{text-decoration:none}
+.req details{margin-top:10px}.req summary{cursor:pointer;color:var(--mut);font-size:14px;padding:6px 0;list-style:none}.req summary::-webkit-details-marker{display:none}.req summary::before{content:'▸ '}.req details[open] summary::before{content:'▾ '}
+.req .more{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.sum{padding:12px 16px;border-radius:var(--r);background:var(--card);box-shadow:0 0 0 1px var(--hair);font-weight:600}
+.chips .chip{height:42px;font-size:15px;padding:0 16px}
+.req .ctl{display:grid;grid-template-columns:1.3fr 1fr;gap:8px}
+.req .ctl textarea{grid-column:1/-1;min-height:44px}
+.req .acts{display:flex;gap:6px;margin-left:auto;flex:none}
+.ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--hair);text-decoration:none;color:var(--ink)}
+.ic.call{background:var(--ok);color:#fff;box-shadow:none}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--mut);margin-left:6px;vertical-align:2px}
+.empty{text-align:center;color:var(--mut);padding:50px 10px}
+.panel{background:var(--card);border-radius:var(--r);box-shadow:0 0 0 1px var(--hair);padding:18px;margin-bottom:14px}
+.panel h2{font-size:17px;margin-bottom:4px}
+.panel .hint{font-size:13px;color:var(--mut)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.prev{width:100%;aspect-ratio:1;border-radius:12px;background:var(--bg) center/cover no-repeat;margin-top:8px;display:grid;place-items:center;color:var(--mut);font-size:14px}
-.sw{display:flex;align-items:center;gap:10px;margin-top:14px}.sw input{width:22px;height:22px;min-height:0}
-.foot{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.item{border:1px solid var(--hair);border-radius:12px;padding:12px;margin-top:10px;position:relative}
+.item .x{position:absolute;top:8px;right:8px}
+.item .mv{display:flex;gap:4px;margin-top:8px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.gal .ph{border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--bg)}
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.gal .ph input{border:0;border-top:1px solid var(--hair);border-radius:0;font-size:13px;min-height:38px}
+.gal .ph div{display:flex;justify-content:space-between;padding:4px}
+.cl{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.cl small{color:var(--mut)}
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--hair);display:none}
+.savebar.on{display:block}
+.savebar .wrap{display:flex;gap:10px;align-items:center}
+.toast{position:fixed;left:50%;top:70px;transform:translateX(-50%) translateY(-20px);opacity:0;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;transition:.3s;z-index:50;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+#login{min-height:100vh;display:grid;place-items:center;padding:16px}
+#login form{width:100%;max-width:360px;background:var(--card);padding:26px;border-radius:18px;box-shadow:0 0 0 1px var(--hair)}
+#login h1{font-size:22px;margin:14px 0 4px}
 .err{color:var(--bad);font-size:14px;margin-top:10px;min-height:20px}
-.card{background:var(--card);border-radius:18px;box-shadow:0 0 0 1px var(--hair);padding:22px;max-width:420px;margin:60px auto}
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:50;max-width:90vw}
-.empty{padding:40px 10px;text-align:center;color:var(--mut)}
+dialog{border:0;border-radius:18px;padding:0;width:min(520px,calc(100% - 24px));background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog form{padding:20px}
+.hide{display:none!important}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pc{background:var(--card);border-radius:var(--r);box-shadow:0 0 0 1px var(--hair);overflow:hidden;display:flex;flex-direction:column}.pc.off{opacity:.55}
+.pc .ph{aspect-ratio:1;background:var(--bg) center/cover no-repeat}.pc .b{padding:12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.pc h3{font-size:16px}.pc .m{font-size:13px;color:var(--mut)}.pc .pr{font-weight:700;font-size:17px;margin-top:4px}
+.ptag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--mut)}.ptag.no{background:#fde8e8;color:var(--bad)}
+.pc .act{display:flex;gap:6px;margin-top:8px}
+.pprev{width:100%;aspect-ratio:1;border-radius:12px;background:var(--bg) center/cover no-repeat;margin-top:8px;display:grid;place-items:center;color:var(--mut);font-size:14px}
+.psw{display:flex!important;align-items:center;gap:10px;margin-top:14px!important;color:var(--ink)!important;font-size:15px!important}.psw input{width:22px;height:22px;min-height:0}
+@media (max-width:640px){.stats{grid-template-columns:1fr 1fr}.stat b{font-size:21px}.row{grid-template-columns:1fr}.req .ctl{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<div id="login" class="hide"><div class="wrap"><div class="card">
-  <div class="logo"><i>M</i>MOBIKOM · адмінка</div>
-  <form id="lf"><label>E-mail</label><input id="le" type="email" autocomplete="username" required>
-    <label>Пароль</label><input id="lp" type="password" autocomplete="current-password" required>
-    <div class="foot" style="justify-content:space-between"><button type="button" class="lnk" id="fp">Забули пароль?</button><button class="btn acc">Увійти</button></div>
-    <div class="err" id="lerr"></div></form>
-  <form id="pf" class="hide"><label>Новий пароль (мінімум 8 символів)</label><input id="np" type="password" autocomplete="new-password" required>
-    <div class="foot"><button class="btn acc">Зберегти пароль</button></div><div class="err" id="perr"></div></form>
-  <p class="sub" style="margin-top:14px;font-size:13px">Немає доступу? <button type="button" class="lnk" id="demo" style="text-decoration:underline">Подивитися демо</button></p>
-</div></div></div>
 
-<div id="app" class="hide">
-<header><div class="wrap"><div class="logo"><i>M</i>MOBIKOM</div><div class="sp"></div>
-  <a class="lnk" id="site" target="_blank" rel="noopener">Сайт ↗</a><button class="btn ghost sm" id="out">Вийти</button></div></header>
-<main class="wrap">
-  <h1>Товари магазину</h1>
-  <p class="sub">Додавайте айфони й аксесуари — вони одразу з'являються на сайті в розділі «Магазин».</p>
-  <div class="chips" id="cats"></div>
-  <div class="grid" id="list"></div>
-</main>
-<button class="add" id="addb">+ Додати товар</button>
+<div id="login" class="hide">
+  <form id="lf">
+    <div class="logo"><i>M</i>MOBIKOM</div>
+    <h1>Вхід в адмінку</h1>
+    <p class="hint" style="color:var(--mut);font-size:14px">Заявки, товари магазину й редагування сайту</p>
+    <label>E-mail</label><input id="le" type="email" autocomplete="username" required>
+    <label>Пароль</label><input id="lp" type="password" autocomplete="current-password" required>
+    <div class="err" id="lerr"></div>
+    <button class="btn acc" style="width:100%;margin-top:6px">Увійти</button>
+    <button type="button" class="lnk" id="fp" style="display:block;margin:14px auto 0">Забули пароль?</button>
+    <button type="button" class="btn ghost" id="demo" style="width:100%;margin-top:14px">Переглянути демо без входу</button>
+  </form>
+  <form id="pf" class="hide">
+    <div class="logo"><i>M</i>MOBIKOM</div>
+    <h1>Новий пароль</h1>
+    <p class="hint" style="color:var(--mut);font-size:14px">Придумайте пароль для входу в адмінку (мінімум 8 символів).</p>
+    <label>Пароль</label><input id="np" type="password" autocomplete="new-password" minlength="8" required>
+    <div class="err" id="perr"></div>
+    <button class="btn acc" style="width:100%;margin-top:6px">Зберегти й увійти</button>
+  </form>
 </div>
 
-<dialog id="dlg"><form id="f" method="dialog">
-  <h2 id="dt" style="font-size:19px">Новий товар</h2>
-  <label>Категорія</label><select id="fc"></select>
-  <label>Назва</label><input id="ft" maxlength="80" placeholder="iPhone 13 Pro" required>
-  <div class="row"><div><label>Пам'ять</label><input id="fm" maxlength="20" placeholder="128 GB"></div>
-  <div><label>Стан</label><select id="fs"><option value="new">Новий</option><option value="used">Б/в</option></select></div></div>
-  <div class="row"><div><label>Ціна, грн</label><input id="fp2" type="number" min="0" step="1" inputmode="numeric" placeholder="18 500"></div>
-  <div><label>Коротко (необов'язково)</label><input id="fn" maxlength="160" placeholder="батарея 89%, гарантія 3 міс."></div></div>
-  <label>Фото</label><input id="fph" type="file" accept="image/*"><div class="prev" id="pv">Немає фото</div>
-  <label class="sw"><input type="checkbox" id="fi" checked> В наявності</label>
-  <label class="sw"><input type="checkbox" id="fv" checked> Показувати на сайті</label>
-  <div class="err" id="ferr"></div>
-  <div class="foot"><button type="button" class="btn ghost bad hide" id="del">Видалити</button><div class="sp"></div><button type="button" class="btn ghost" id="cancel">Скасувати</button><button type="submit" class="btn acc" id="save">Зберегти</button></div>
+<div id="app" class="hide">
+<header><div class="wrap">
+  <div class="logo"><i>M</i>MOBIKOM</div><div class="sp"></div>
+  <a class="lnk" id="site" target="_blank" rel="noopener">Сайт ↗</a>
+  <button class="btn ghost sm" id="out">Вийти</button>
+</div></header>
+
+<div class="wrap">
+  <div class="hello" id="hello"></div>
+  <div class="tabs" role="tablist">
+    <button class="on" data-t="req">Заявки</button><button data-t="shop">Товари</button><button data-t="site">Змінити сайт</button><button data-t="set" aria-label="Налаштування">⚙</button>
+  </div>
+
+  <section id="t-req">
+    <div class="bar hide"><input id="q" type="search"><button id="rf"></button></div>
+    <div class="chips" id="chips"></div>
+    <div class="list" id="list"></div>
+    <button class="btn ghost" id="add" style="width:100%;margin-top:14px">+ Записати клієнта вручну</button>
+  </section>
+
+  <section id="t-cli" class="hide"><div class="bar"><input id="cq" type="search" placeholder="Пошук клієнта"></div><div class="list" id="clist"></div></section>
+
+  <section id="t-shop" class="hide">
+    <div class="chips" id="pcats"></div>
+    <div class="pgrid" id="plist"></div>
+    <button class="btn acc" id="padd" style="width:100%;margin-top:14px">+ Додати товар</button>
+  </section>
+
+  <section id="t-site" class="hide">
+    <div class="panel"><h2>Оголошення на сайті</h2><p class="hint">Смужка вгорі сайту. Наприклад: «31 грудня працюємо до 14:00». Порожньо — смужки немає.</p><input id="c-notice" maxlength="140"></div>
+    <div class="panel"><h2>Телефон</h2><p class="hint">Змінюється на всьому сайті й у кнопці «Подзвонити».</p><input id="c-phone" placeholder="098 009 49 69"></div>
+    <div class="panel"><h2>Графік роботи</h2><div id="c-hours"></div><button class="btn ghost sm" style="margin-top:10px" id="h-add">+ Рядок</button></div>
+    <div class="panel"><h2>Послуги й ціни</h2><p class="hint">Ціну можна не вказувати. Порядок як на сайті.</p><div id="c-serv"></div></div>
+    <div class="panel"><h2>Примітка про ціни</h2><textarea id="c-pnote" maxlength="300"></textarea></div>
+    <div class="panel"><h2>Фото сервісу й робіт</h2><p class="hint">Перше фото — найбільше. Найкраще — горизонтальні фото з телефона.</p>
+      <div class="gal" id="c-gal"></div>
+      <label class="btn ghost sm" style="margin-top:12px;display:inline-flex;color:var(--ink)">+ Завантажити фото<input type="file" accept="image/*" multiple id="up" hidden></label>
+    </div>
+  </section>
+
+  <section id="t-set" class="hide">
+    <div class="panel"><h2>Telegram-сповіщення</h2>
+      <p class="hint">Кожна нова заявка з сайту миттєво прийде в Telegram.<br>1) Напишіть <b>@BotFather</b> → /newbot → скопіюйте токен.<br>2) Напишіть своєму боту будь-що, потім відкрийте <b>@userinfobot</b> і скопіюйте свій ID.</p>
+      <label>Токен бота</label><input id="tg-t" placeholder="123456:ABC…" autocomplete="off">
+      <label>Ваш chat ID</label><input id="tg-c" placeholder="123456789" inputmode="numeric">
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn acc" id="tg-s">Зберегти</button><button class="btn ghost" id="tg-x">Надіслати тест</button></div>
+    </div>
+    <div class="panel"><h2>Експорт</h2><p class="hint">Усі заявки в Excel-файл (CSV).</p><button class="btn ghost" id="csv" style="margin-top:10px">Завантажити CSV</button></div>
+  </section>
+</div>
+
+<div class="savebar" id="sb"><div class="wrap"><span style="flex:1;font-size:14px;color:var(--mut)">Є незбережені зміни</span><button class="btn ghost" id="sb-x">Скасувати</button><button class="btn acc" id="sb-s">Зберегти на сайті</button></div></div>
+</div>
+
+<dialog id="dlg"><form method="dialog" id="df">
+  <h2 style="font-size:18px">Нова заявка</h2>
+  <div class="row"><div><label>Ім’я</label><input name="name" required maxlength="80"></div><div><label>Телефон</label><input name="phone" required inputmode="tel" maxlength="25"></div></div>
+  <div class="row"><div><label>Пристрій</label><input name="device" maxlength="80" placeholder="iPhone 13"></div><div><label>Послуга</label><input name="service" maxlength="80" list="svl"></div></div>
+  <div class="row"><div><label>Дата</label><input name="wish_date" type="date"></div><div><label>Сума, ₴</label><input name="price" type="number" min="0" step="1"></div></div>
+  <label>Коментар</label><textarea name="comment" maxlength="1000"></textarea>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px"><button class="btn ghost" value="x" formnovalidate>Скасувати</button><button class="btn acc" value="ok">Додати</button></div>
 </form></dialog>
+<datalist id="svl"></datalist>
+<dialog id="pdlg"><form id="pf2" method="dialog">
+  <h2 id="pdt" style="font-size:18px">Новий товар</h2>
+  <label>Категорія</label><select id="pc"></select>
+  <label>Назва</label><input id="pt" maxlength="80" placeholder="iPhone 13 Pro" required>
+  <div class="row"><div><label>Пам'ять</label><input id="pm" maxlength="20" placeholder="128 GB"></div>
+  <div><label>Стан</label><select id="ps"><option value="new">Новий</option><option value="used">Б/в</option></select></div></div>
+  <div class="row"><div><label>Ціна, грн</label><input id="pp" type="number" min="0" step="1" inputmode="numeric" placeholder="18500"></div>
+  <div><label>Коротко (необов'язково)</label><input id="pn" maxlength="160" placeholder="батарея 89%, гарантія 3 міс."></div></div>
+  <label>Фото</label><input id="pph" type="file" accept="image/*"><div class="pprev" id="ppv">Немає фото</div>
+  <label class="psw"><input type="checkbox" id="pi" checked> В наявності</label>
+  <label class="psw"><input type="checkbox" id="pv" checked> Показувати на сайті</label>
+  <div class="err" id="perr2"></div>
+  <div style="display:flex;gap:8px;margin-top:16px"><button type="button" class="btn ghost hide" id="pdel" style="color:var(--bad)">Видалити</button><div class="sp"></div><button type="button" class="btn ghost" id="pcancel">Скасувати</button><button type="submit" class="btn acc" id="psave">Зберегти</button></div>
+</form></dialog>
+<div class="toast" id="toast"></div>
 
 <script>
+const C = window.CRM_CONFIG || {}, SHOP = C.shop || 'mobikom';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-const C = window.SHOP_CONFIG || {}, SHOP = C.shop || 'mobikom', DEMO = !C.url || sessionStorage.getItem('demo') === '1';
-const CATS = { iphone: 'iPhone', glass: 'Скло й чохли', cables: 'Кабелі й зарядки', gadgets: 'Гаджети' };
-$('#fc').innerHTML = Object.entries(CATS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
-if (C.siteUrl) $('#site').href = C.siteUrl; else $('#site').classList.add('hide');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast = t => { const e = $('#toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2200); };
+const ST = {new:'Нова', called:'Передзвонили', in_work:'В роботі', done:'Виконано', cancel:'Скасовано'};
+const money = n => Math.round(n || 0).toLocaleString('uk-UA') + ' ₴';
+const telHref = p => 'tel:' + String(p).replace(/[^\d+]/g, '').replace(/^0/, '+380');
+const viberHref = p => 'viber://chat?number=' + encodeURIComponent(String(p).replace(/[^\d+]/g, '').replace(/^0/, '+380'));
+$('#site').href = C.siteUrl || '#';
+
+const DEMO = !C.url || !C.key || sessionStorage.getItem('demo') === '1';
 const sb = DEMO ? demoClient() : supabase.createClient(C.url, C.key);
 function demoClient() {
-  let db = [
-    { id: 3, category: 'iphone', title: 'iPhone 14', memory: '128 GB', condition: 'used', price: 21500, note: 'батарея 91%, гарантія 3 міс.', photo: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop1.webp', in_stock: true, visible: true, sort: 0 },
-    { id: 2, category: 'iphone', title: 'iPhone 13 Pro', memory: '256 GB', condition: 'used', price: 24900, note: 'ідеальний стан', photo: null, in_stock: false, visible: true, sort: 0 },
-    { id: 1, category: 'glass', title: 'Захисне скло 3D', memory: null, condition: 'new', price: 350, note: 'клеїмо безкоштовно', photo: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop2.webp', in_stock: true, visible: true, sort: 0 }];
-  const q = () => { let patch = null, del = false; const o = {
-    select: () => o, order: () => o, limit: async () => ({ data: db.map(r => ({ ...r })) }),
-    eq: (k, v) => { if (!patch && !del) return o; if (del) db = db.filter(r => r[k] !== v); else db.filter(r => r[k] === v).forEach(r => Object.assign(r, patch)); return Promise.resolve({}); },
+  const ago = h => new Date(Date.now() - h * 36e5).toISOString();
+  const db = {
+    requests: [
+      {id:6,created_at:ago(.3),name:'Олександр',phone:'067 123 45 67',device:'iPhone 13',service:'Заміна екрана',wish_date:null,comment:'Розбився екран, не працює сенсор знизу',status:'new',price:null,notes:null,source:'site'},
+      {id:5,created_at:ago(2),name:'Марина',phone:'093 765 43 21',device:null,service:'Замовлення: iPhone 14, 128 GB',comment:'Чи можна відкласти до суботи?',status:'new',price:null,notes:null,source:'site'},
+      {id:4,created_at:ago(26),name:'Ігор',phone:'050 555 11 22',device:'Samsung S23',service:'Заміна батареї',status:'in_work',price:1800,notes:'Батарея приїде завтра',source:'manual'},
+      {id:3,created_at:ago(50),name:'Ігор',phone:'050 555 11 22',device:'iPhone 11',service:'Захисне скло',status:'done',price:350,notes:null,source:'site'},
+      {id:2,created_at:ago(80),name:'Сергій',phone:'097 222 33 44',device:'iPhone 12',service:'Ремонт після води',status:'done',price:2400,notes:null,source:'site'}],
+    products: [
+      { id: 3, category: 'iphone', title: 'iPhone 14', memory: '128 GB', condition: 'used', price: 21500, note: 'батарея 91%, гарантія 3 міс.', photo: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop1.webp', in_stock: true, visible: true, sort: 0 },
+      { id: 2, category: 'iphone', title: 'iPhone 13 Pro', memory: '256 GB', condition: 'used', price: 24900, note: 'ідеальний стан', photo: null, in_stock: false, visible: true, sort: 0 },
+      { id: 1, category: 'glass', title: 'Захисне скло 3D', memory: null, condition: 'new', price: 350, note: 'клеїмо безкоштовно', photo: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop2.webp', in_stock: true, visible: true, sort: 0 }],
+    content: [{ id: 1, shop: SHOP, data: {} }], settings: [{ id: 1, shop: SHOP }]
+  };
+  const q = t => { let rows = db[t], patch = null, del = false; const o = {
+    select: () => o, order: () => o, limit: async () => ({ data: rows.map(r => ({ ...r })) }),
+    eq: (k, v) => { if (del) { db[t] = db[t].filter(r => r[k] !== v); return Promise.resolve({}); } if (patch) { db[t].filter(r => r[k] === v).forEach(r => Object.assign(r, patch)); return Promise.resolve({}); } if (k === 'shop') return o; rows = rows.filter(r => r[k] === v); return o; },
+    single: async () => ({ data: rows[0] || {} }), maybeSingle: async () => ({ data: rows[0] || null }),
     update: p => { patch = p; return o; }, delete: () => { del = true; return o; },
-    insert: async r => { db.unshift({ id: Date.now(), ...r }); return {}; } }; return o; };
-  return { auth: { getSession: async () => ({ data: { session: { demo: 1 } } }), signOut: async () => sessionStorage.removeItem('demo'), signInWithPassword: async () => ({}), updateUser: async () => ({}), resetPasswordForEmail: async () => ({}) },
-    from: q, storage: { from: () => ({ upload: async () => ({}), getPublicUrl: () => ({ data: { publicUrl: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop4.webp' } }) }) } };
+    upsert: async r => { Object.assign(db[t][0] || (db[t][0] = {}), r); return {}; },
+    insert: async r => { db[t].unshift({ id: Date.now(), created_at: new Date().toISOString(), ...r }); return {}; } }; return o; };
+  return { auth: { getSession: async () => ({ data: { session: { demo: 1 } } }), signOut: async () => sessionStorage.removeItem('demo'), onAuthStateChange() {}, signInWithPassword: async () => ({}), updateUser: async () => ({}), resetPasswordForEmail: async () => ({}) },
+    from: q, rpc: async () => ({ error: { message: 'у демо-режимі Telegram не надсилається' } }),
+    storage: { from: () => ({ upload: async () => ({}), getPublicUrl: () => ({ data: { publicUrl: 'https://aronhrynko-creator.github.io/mobikom-kyiv/opt/shop4.webp' } }) }) } };
 }
-function toast(t) { document.querySelectorAll('.toast').forEach(x => x.remove()); const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.append(d); setTimeout(() => d.remove(), 2600); }
-const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let R = [], filter = 'new', content = {}, saved = '{}';
 
 // ---------- auth ----------
 const setPw = /type=(invite|recovery)/.test(location.hash);
@@ -127,91 +259,274 @@ async function boot() {
   const { data: { session } } = await sb.auth.getSession();
   if (setPw && session) { $('#login').classList.remove('hide'); $('#lf').classList.add('hide'); $('#pf').classList.remove('hide'); return; }
   $('#login').classList.toggle('hide', !!session); $('#app').classList.toggle('hide', !session);
-  if (session) load();
+  if (session) { loadReq(); loadContent(); loadSettings(); loadProducts(); }
 }
-$('#lf').onsubmit = async e => { e.preventDefault(); $('#lerr').textContent = '';
+$('#lf').onsubmit = async e => {
+  e.preventDefault(); $('#lerr').textContent = '';
   const { error } = await sb.auth.signInWithPassword({ email: $('#le').value.trim(), password: $('#lp').value });
-  if (error) $('#lerr').textContent = 'Невірний e-mail або пароль'; else boot(); };
-$('#pf').onsubmit = async e => { e.preventDefault(); const pw = $('#np').value;
+  if (error) $('#lerr').textContent = 'Невірний e-mail або пароль'; else boot();
+};
+$('#pf').onsubmit = async e => {
+  e.preventDefault(); const pw = $('#np').value;
   if (pw.length < 8) return $('#perr').textContent = 'Мінімум 8 символів';
   const { error } = await sb.auth.updateUser({ password: pw });
   if (error) return $('#perr').textContent = 'Помилка: ' + error.message;
-  history.replaceState(null, '', location.pathname); location.reload(); };
-$('#fp').onclick = async () => { const em = $('#le').value.trim(); if (!em) return $('#lerr').textContent = 'Спочатку введіть e-mail';
+  history.replaceState(null, '', location.pathname); location.reload();
+};
+$('#fp').onclick = async () => {
+  const em = $('#le').value.trim(); if (!em) { $('#lerr').textContent = 'Спочатку введіть e-mail'; return; }
   await sb.auth.resetPasswordForEmail(em, { redirectTo: location.origin + location.pathname });
-  $('#lerr').style.color = 'var(--ok)'; $('#lerr').textContent = 'Якщо такий e-mail є — на нього прийшов лист із посиланням'; };
+  $('#lerr').style.color = 'var(--ok)'; $('#lerr').textContent = 'Якщо такий e-mail є — на нього прийшов лист із посиланням';
+};
 $('#demo').onclick = () => { sessionStorage.setItem('demo', '1'); location.reload(); };
+if (DEMO) { const b = document.createElement('div'); b.style.cssText = 'background:var(--acc);color:#141517;text-align:center;font-size:13.5px;font-weight:600;padding:8px 12px'; b.textContent = 'Демо-режим: тестові дані, зміни не зберігаються'; $('#app').prepend(b); }
 $('#out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
-if (DEMO) { const b = document.createElement('div'); b.style.cssText = 'background:var(--acc);color:#fff;text-align:center;font-size:13.5px;font-weight:600;padding:8px 12px'; b.textContent = 'Демо-режим: тестові дані, зміни не зберігаються'; $('#app').prepend(b); }
 
-// ---------- list ----------
-let P = [], cat = 'all', editing = null, photoBlob = null;
-async function load() {
-  const { data, error } = await sb.from('products').select('*').eq('shop', SHOP).order('sort').limit(1000);
-  if (error) return toast('Помилка завантаження: ' + error.message);
-  P = data || []; render();
-}
-function render() {
-  const counts = P.reduce((a, p) => (a[p.category] = (a[p.category] || 0) + 1, a), {});
-  $('#cats').innerHTML = [['all', 'Усі', P.length], ...Object.entries(CATS).map(([k, v]) => [k, v, counts[k] || 0])]
-    .map(([k, v, n]) => `<button class="chip ${k === cat ? 'on' : ''}" data-c="${k}">${v} · ${n}</button>`).join('');
-  $$('#cats .chip').forEach(b => b.onclick = () => { cat = b.dataset.c; render(); });
-  const rows = P.filter(p => cat === 'all' || p.category === cat);
-  $('#list').innerHTML = rows.length ? rows.map(p => `<div class="p ${p.visible ? '' : 'off'}">
-    <div class="ph" style="${p.photo ? `background-image:url('${esc(p.photo)}')` : ''}"></div>
-    <div class="b"><h3>${esc(p.title)}</h3>
-      <div class="m">${[p.memory, p.condition === 'used' ? 'б/в' : 'новий', CATS[p.category]].filter(Boolean).map(esc).join(' · ')}</div>
-      ${p.note ? `<div class="m">${esc(p.note)}</div>` : ''}
-      <div class="pr">${p.price != null ? Number(p.price).toLocaleString('uk-UA') + ' грн' : 'Ціна за запитом'}</div>
-      <div>${p.in_stock ? '<span class="tag">в наявності</span>' : '<span class="tag no">немає</span>'} ${p.visible ? '' : '<span class="tag">прихований</span>'}</div>
-      <div class="act"><button class="btn sm ghost" data-e="${p.id}">Змінити</button><button class="btn sm ghost" data-s="${p.id}">${p.in_stock ? 'Продано' : 'Є в наявності'}</button></div>
-    </div></div>`).join('') : '<div class="empty">Тут поки порожньо. Натисніть «+ Додати товар».</div>';
-  $$('[data-e]').forEach(b => b.onclick = () => open(P.find(p => p.id == b.dataset.e)));
-  $$('[data-s]').forEach(b => b.onclick = async () => { const p = P.find(x => x.id == b.dataset.s);
-    const { error } = await sb.from('products').update({ in_stock: !p.in_stock }).eq('id', p.id);
-    if (error) return toast('Не вдалося: ' + error.message); p.in_stock = !p.in_stock; render(); toast('Збережено'); });
-}
+// ---------- tabs ----------
+$$('.tabs button').forEach(b => b.onclick = () => {
+  $$('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  ['req','cli','shop','site','set'].forEach(t => $('#t-' + t).classList.toggle('hide', t !== b.dataset.t));
+  if (b.dataset.t === 'cli') renderClients();
+});
 
-// ---------- form ----------
-function open(p) {
-  editing = p || null; photoBlob = null; $('#ferr').textContent = '';
-  $('#dt').textContent = p ? 'Змінити товар' : 'Новий товар'; $('#del').classList.toggle('hide', !p);
-  $('#fc').value = p?.category || (cat !== 'all' ? cat : 'iphone'); $('#ft').value = p?.title || ''; $('#fm').value = p?.memory || '';
-  $('#fs').value = p?.condition || 'new'; $('#fp2').value = p?.price ?? ''; $('#fn').value = p?.note || '';
-  $('#fi').checked = p ? p.in_stock : true; $('#fv').checked = p ? p.visible : true; $('#fph').value = '';
-  setPrev(p?.photo); $('#dlg').showModal();
+// ---------- requests ----------
+async function loadReq() {
+  const { data, error } = await sb.from('requests').select('*').eq('shop', SHOP).order('created_at', { ascending: false }).limit(2000);
+  if (error) { toast('Помилка завантаження: ' + error.message); return; }
+  const before = R.length && R[0].id; R = data;
+  if (before && R[0] && R[0].id !== before && R[0].status === 'new') toast('Нова заявка: ' + R[0].name);
+  renderReq(); stats();
 }
-function setPrev(u) { const pv = $('#pv'); pv.style.backgroundImage = u ? `url('${u}')` : ''; pv.textContent = u ? '' : 'Немає фото'; }
+function stats() {
+  const n = R.filter(r => r.status === 'new').length;
+  $('#hello').innerHTML = n ? `<b>${n}</b> ${n === 1 ? 'нова заявка' : n < 5 ? 'нові заявки' : 'нових заявок'} — передзвоніть клієнтам` : 'Нових заявок немає';
+  $('#hello').classList.toggle('on', !!n);
+  document.title = (n ? '(' + n + ') ' : '') + 'MOBIKOM · Адмінка';
+}
+const GROUP = s => s === 'called' ? 'in_work' : s;
+function renderChips() {
+  const cnt = k => R.filter(r => GROUP(r.status) === k).length;
+  $('#chips').innerHTML = [['new','Нові'],['in_work','В роботі'],['done','Готові']]
+    .map(([k, t]) => `<button class="chip ${filter === k ? 'on' : ''}" data-f="${k}">${t}<em>${cnt(k)}</em></button>`).join('');
+  $$('#chips .chip').forEach(c => c.onclick = () => { filter = c.dataset.f; renderReq(); });
+}
+function fmtDate(d) { const x = new Date(d); return x.toLocaleDateString('uk-UA', { day:'numeric', month:'long' }) + ' о ' + x.toLocaleTimeString('uk-UA', { hour:'2-digit', minute:'2-digit' }); }
+const PHONE_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>';
+async function setReq(id, patch, msg) {
+  const { error } = await sb.from('requests').update(patch).eq('id', id);
+  if (error) return toast('Не збереглося: ' + error.message);
+  Object.assign(R.find(r => r.id === id), patch); toast(msg || 'Збережено'); stats(); renderReq();
+}
+function renderReq() {
+  renderChips();
+  const rows = R.filter(r => GROUP(r.status) === filter);
+  let head = '';
+  if (filter === 'done') {
+    const m = new Date(); m.setDate(1); m.setHours(0,0,0,0);
+    const mon = rows.filter(r => new Date(r.created_at) >= m);
+    if (mon.length) head = `<div class="sum">Цього місяця: ${mon.length} замовлень на ${money(mon.reduce((a, r) => a + (+r.price || 0), 0))}</div>`;
+  }
+  $('#list').innerHTML = head + (rows.length ? rows.map(r => {
+    const visits = R.filter(x => x.phone === r.phone).length, st = GROUP(r.status);
+    const what = [r.device, r.service].filter(Boolean).map(esc).join(' · ');
+    const next = st === 'new' ? `<button class="btn" data-go="in_work">Взяти в роботу</button>`
+      : st === 'in_work' ? `<button class="btn ok" data-go="done">Готово ✓</button>` : '';
+    return `<article class="req" data-s="${st}" data-id="${r.id}">
+      <h3>${esc(r.name)}${visits > 1 ? `<span class="badge">вже звертався</span>` : ''}</h3>
+      ${what ? `<div class="what">${what}</div>` : ''}
+      ${r.comment ? `<div class="cm">«${esc(r.comment)}»</div>` : ''}
+      <div class="meta">${r.wish_date ? 'Хоче приїхати ' + new Date(r.wish_date).toLocaleDateString('uk-UA', { day:'numeric', month:'long' }) + ' · ' : ''}заявка ${fmtDate(r.created_at)}</div>
+      ${st === 'done' && r.price ? `<div class="paid">Сума: ${money(r.price)}</div>` : ''}
+      <div class="go"><a class="btn acc" href="${telHref(r.phone)}">${PHONE_SVG}<span>${esc(r.phone)}</span></a>${next}</div>
+      <details><summary>Ще</summary>
+        <label>Сума, ₴</label><input data-k="price" type="number" min="0" step="1" inputmode="numeric" value="${r.price ?? ''}">
+        <label>Нотатки (бачите лише ви)</label><textarea data-k="notes" rows="2">${esc(r.notes)}</textarea>
+        <div class="more"><a class="btn ghost sm" href="${viberHref(r.phone)}">Написати у Viber</a>
+        ${st !== 'new' ? '<button class="btn ghost sm" data-go="new">Повернути в нові</button>' : ''}
+        <button class="btn ghost sm" data-go="cancel">Видалити заявку</button></div>
+      </details>
+    </article>`; }).join('') : `<div class="empty">${filter === 'new' ? 'Нових заявок немає' : filter === 'in_work' ? 'Зараз нічого в роботі' : 'Тут будуть виконані замовлення'}</div>`);
+  $$('#list .req').forEach(card => { const id = +card.dataset.id;
+    card.querySelectorAll('[data-go]').forEach(b => b.onclick = () => {
+      const s2 = b.dataset.go;
+      if (s2 === 'cancel' && !confirm('Прибрати цю заявку?')) return;
+      if (s2 === 'done' && !R.find(r => r.id === id).price) {
+        const v = prompt('Скільки заплатив клієнт, грн? (можна пропустити)');
+        const n = v ? +v.replace(/\D/g, '') : 0;
+        if (n) return setReq(id, { status: 'done', price: n }, 'Готово!');
+      }
+      setReq(id, { status: s2 }, s2 === 'in_work' ? 'Перенесено «В роботі»' : s2 === 'done' ? 'Готово!' : s2 === 'cancel' ? 'Заявку прибрано' : 'Повернуто в нові');
+    });
+    card.querySelectorAll('[data-k]').forEach(el => el.onchange = () => { let v = el.value.trim(); if (el.dataset.k === 'price') v = v === '' ? null : +v; setReq(id, { [el.dataset.k]: v }); });
+  });
+}
+$('#q').oninput = renderReq;
+$('#rf').onclick = loadReq;
+setInterval(() => { if (!document.hidden && !$('#app').classList.contains('hide') && !document.activeElement.closest?.('.req')) loadReq(); }, 30000);
+$('#add').onclick = () => { $('#df').reset(); $('#dlg').showModal(); };
+$('#dlg').onclose = async () => {
+  if ($('#dlg').returnValue !== 'ok') return;
+  const f = Object.fromEntries(new FormData($('#df'))); for (const k in f) if (f[k] === '') f[k] = null;
+  if (f.price != null) f.price = +f.price; f.shop = SHOP; f.source = 'manual'; f.status = f.price ? 'in_work' : 'new';
+  const { error } = await sb.from('requests').insert(f);
+  if (error) toast('Помилка: ' + error.message); else { toast('Додано'); loadReq(); }
+};
+
+// ---------- clients ----------
+function renderClients() {
+  const m = new Map();
+  R.forEach(r => { const k = String(r.phone).replace(/\D/g, '').slice(-9); const c = m.get(k) || { name: r.name, phone: r.phone, cars: new Set(), n: 0, sum: 0, last: r.created_at };
+    c.n++; if (r.status === 'done') c.sum += +r.price || 0; if (r.device) c.cars.add(r.device); if (r.created_at > c.last) { c.last = r.created_at; c.name = r.name; } m.set(k, c); });
+  const q = $('#cq').value.trim().toLowerCase();
+  const list = [...m.values()].filter(c => !q || (c.name + ' ' + c.phone + ' ' + [...c.cars].join(' ')).toLowerCase().includes(q)).sort((a, b) => b.last.localeCompare(a.last));
+  $('#clist').innerHTML = list.length ? list.map(c => `<div class="req"><div class="top"><div><h3>${esc(c.name)}</h3><div class="meta">${esc(c.phone)}${c.cars.size ? ' · ' + esc([...c.cars].join(', ')) : ''}</div>
+    <div class="meta">Візитів: ${c.n} · Сплачено: ${money(c.sum)} · Останній: ${new Date(c.last).toLocaleDateString('uk-UA')}</div></div>
+    <div class="acts"><button class="ic" data-p="${esc(c.phone)}" title="Заявки клієнта">≡</button><a class="ic call" href="${telHref(c.phone)}">☎</a></div></div></div>`).join('') : '<div class="empty">Клієнтів поки немає</div>';
+  $$('#clist [data-p]').forEach(b => b.onclick = () => { $('#q').value = b.dataset.p; filter = 'all'; $$('.tabs button')[0].click(); renderReq(); });
+}
+$('#cq').oninput = renderClients;
+
+// ---------- site content ----------
+async function loadContent() {
+  const { data, error } = await sb.from('content').select('data').eq('shop', SHOP).single();
+  if (error) return toast('Помилка: ' + error.message);
+  content = Object.keys(data.data || {}).length ? data.data : (C.defaults || {});
+  saved = JSON.stringify(content); renderContent();
+}
+function dirty() { $('#sb').classList.toggle('on', JSON.stringify(content) !== saved); }
+function renderContent() {
+  const c = content;
+  $('#c-notice').value = c.notice || ''; $('#c-phone').value = c.phone || ''; $('#c-pnote').value = c.price_note || '';
+  $('#c-hours').innerHTML = (c.hours || []).map((h, i) => `<div class="item" data-i="${i}"><button class="btn ghost sm x" data-del>✕</button>
+    <div class="row"><div><label>Дні</label><input data-h="1" value="${esc(h[1])}" placeholder="Пн – Пт"></div><div><label>Час</label><input data-h="2" value="${esc(h[2])}" placeholder="09:00 – 18:00 або вихідний"></div></div>
+    <label>Дні тижня для підсвітки «сьогодні»</label><div class="chips" style="margin:0">${['Пн','Вт','Ср','Чт','Пт','Сб','Нд'].map((d, k) => `<button type="button" class="chip ${String(h[0]).split(',').includes(String(k)) ? 'on' : ''}" data-wd="${k}">${d}</button>`).join('')}</div></div>`).join('');
+  $$('#c-hours .item').forEach(it => { const h = c.hours[+it.dataset.i];
+    it.querySelectorAll('[data-h]').forEach(inp => inp.oninput = () => { h[+inp.dataset.h] = inp.value; dirty(); });
+    it.querySelectorAll('[data-wd]').forEach(b => b.onclick = () => { const s = new Set(String(h[0]).split(',').filter(Boolean)); s.has(b.dataset.wd) ? s.delete(b.dataset.wd) : s.add(b.dataset.wd); h[0] = [...s].sort().join(','); b.classList.toggle('on'); dirty(); });
+    it.querySelector('[data-del]').onclick = () => { c.hours.splice(+it.dataset.i, 1); renderContent(); dirty(); }; });
+  $('#c-serv').innerHTML = (c.services || []).map((s, i) => `<div class="item" data-i="${i}">
+    <div class="row"><div><label>Назва</label><input data-s="t" value="${esc(s.t)}" maxlength="60"></div><div><label>Ціна (необов’язково)</label><input data-s="price" value="${esc(s.price || '')}" placeholder="від 500 ₴" maxlength="30"></div></div>
+    <label>Опис</label><textarea data-s="p" maxlength="200" rows="2">${esc(s.p)}</textarea>
+    <div class="mv"><button class="btn ghost sm" data-up ${i ? '' : 'disabled'}>↑</button><button class="btn ghost sm" data-dn ${i < c.services.length - 1 ? '' : 'disabled'}>↓</button></div></div>`).join('');
+  $$('#c-serv .item').forEach(it => { const i = +it.dataset.i, s = c.services[i];
+    it.querySelectorAll('[data-s]').forEach(inp => inp.oninput = () => { s[inp.dataset.s] = inp.value; dirty(); });
+    it.querySelector('[data-up]').onclick = () => { [c.services[i - 1], c.services[i]] = [c.services[i], c.services[i - 1]]; renderContent(); dirty(); };
+    it.querySelector('[data-dn]').onclick = () => { [c.services[i + 1], c.services[i]] = [c.services[i], c.services[i + 1]]; renderContent(); dirty(); }; });
+  $('#svl').innerHTML = (c.services || []).map(s => `<option value="${esc(s.t)}">`).join('');
+  $('#c-gal').innerHTML = (c.gallery || []).map((g, i) => `<div class="ph" data-i="${i}"><img src="${esc(g[0])}" alt="" loading="lazy"><input value="${esc(g[1])}" placeholder="Підпис, напр. Заміна екрана" maxlength="80">
+    <div><button class="btn ghost sm" data-l ${i ? '' : 'disabled'}>←</button><button class="btn ghost sm" data-del>✕</button><button class="btn ghost sm" data-r ${i < c.gallery.length - 1 ? '' : 'disabled'}>→</button></div></div>`).join('');
+  $$('#c-gal .ph').forEach(p => { const i = +p.dataset.i, G = c.gallery;
+    p.querySelector('input').oninput = e => { G[i][1] = e.target.value; dirty(); };
+    p.querySelector('[data-l]').onclick = () => { [G[i - 1], G[i]] = [G[i], G[i - 1]]; renderContent(); dirty(); };
+    p.querySelector('[data-r]').onclick = () => { [G[i + 1], G[i]] = [G[i], G[i + 1]]; renderContent(); dirty(); };
+    p.querySelector('[data-del]').onclick = () => { if (confirm('Прибрати це фото з сайту?')) { G.splice(i, 1); renderContent(); dirty(); } }; });
+}
+$('#c-notice').oninput = e => { content.notice = e.target.value; dirty(); };
+$('#c-phone').oninput = e => { content.phone = e.target.value; dirty(); };
+$('#c-pnote').oninput = e => { content.price_note = e.target.value; dirty(); };
+$('#h-add').onclick = () => { (content.hours ||= []).push(['', '', '']); renderContent(); dirty(); };
+$('#sb-x').onclick = () => { content = JSON.parse(saved); renderContent(); dirty(); };
+$('#sb-s').onclick = async () => {
+  if (content.phone && String(content.phone).replace(/\D/g, '').length < 9) return toast('Перевірте номер телефону');
+  $('#sb-s').disabled = true;
+  const { error } = await sb.from('content').upsert({ shop: SHOP, data: content, updated_at: new Date().toISOString() });
+  $('#sb-s').disabled = false;
+  if (error) return toast('Помилка: ' + error.message);
+  saved = JSON.stringify(content); dirty(); toast('Збережено — сайт уже оновився');
+};
 async function shrink(file) {
-  const img = await createImageBitmap(file), k = Math.min(1, 1400 / Math.max(img.width, img.height));
+  const img = await createImageBitmap(file), k = Math.min(1, 1600 / Math.max(img.width, img.height));
   const cv = document.createElement('canvas'); cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
   cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
   return new Promise(r => cv.toBlob(r, 'image/webp', .82));
 }
-$('#fph').onchange = async e => { const f = e.target.files[0]; if (!f) return; photoBlob = await shrink(f); setPrev(URL.createObjectURL(photoBlob)); };
-$('#addb').onclick = () => open(null);
-$('#cancel').onclick = () => $('#dlg').close();
-$('#f').onsubmit = async e => {
-  e.preventDefault(); $('#save').disabled = true; $('#ferr').textContent = '';
-  try {
-    let photo = editing?.photo || null;
-    if (photoBlob) {
-      const path = SHOP + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 7) + '.webp';
-      const { error } = await sb.storage.from('products').upload(path, photoBlob, { contentType: 'image/webp', cacheControl: '31536000' });
-      if (error) throw error; photo = sb.storage.from('products').getPublicUrl(path).data.publicUrl;
-    }
-    const row = { shop: SHOP, category: $('#fc').value, title: $('#ft').value.trim(), memory: $('#fm').value.trim() || null, condition: $('#fs').value,
-      price: $('#fp2').value === '' ? null : Math.round(+$('#fp2').value), note: $('#fn').value.trim() || null, photo,
-      in_stock: $('#fi').checked, visible: $('#fv').checked };
-    const { error } = editing ? await sb.from('products').update(row).eq('id', editing.id) : await sb.from('products').insert(row);
-    if (error) throw error;
-    $('#dlg').close(); toast('Збережено — вже на сайті'); load();
-  } catch (err) { $('#ferr').textContent = 'Не вдалося: ' + (err.message || err); }
-  $('#save').disabled = false;
+$('#up').onchange = async e => {
+  const files = [...e.target.files]; e.target.value = '';
+  for (const f of files) {
+    toast('Завантажую ' + f.name + '…');
+    try {
+      const blob = await shrink(f), path = SHOP + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 7) + '.webp';
+      const { error } = await sb.storage.from('media').upload(path, blob, { contentType: 'image/webp', cacheControl: '31536000' });
+      if (error) throw error;
+      (content.gallery ||= []).push([sb.storage.from('media').getPublicUrl(path).data.publicUrl, '']);
+    } catch (err) { toast('Не вдалося: ' + (err.message || err)); }
+  }
+  renderContent(); dirty(); toast('Фото додано — натисніть «Зберегти на сайті»');
 };
-$('#del').onclick = async () => { if (!editing || !confirm('Видалити «' + editing.title + '»?')) return;
-  const { error } = await sb.from('products').delete().eq('id', editing.id);
-  if (error) return $('#ferr').textContent = 'Не вдалося: ' + error.message; $('#dlg').close(); toast('Видалено'); load(); };
+addEventListener('beforeunload', e => { if (JSON.stringify(content) !== saved) { e.preventDefault(); e.returnValue = ''; } });
+
+// ---------- products ----------
+const PCATS = { iphone: 'iPhone', glass: 'Скло й чохли', cables: 'Кабелі й зарядки', gadgets: 'Гаджети' };
+let PR = [], pcat = 'all', pedit = null, pblob = null;
+$('#pc').innerHTML = Object.entries(PCATS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
+async function loadProducts() {
+  const { data, error } = await sb.from('products').select('*').eq('shop', SHOP).order('sort').limit(1000);
+  if (error) return toast('Помилка: ' + error.message); PR = data || []; renderProducts();
+}
+function renderProducts() {
+  const cnt = PR.reduce((a, p) => (a[p.category] = (a[p.category] || 0) + 1, a), {});
+  $('#pcats').innerHTML = [['all', 'Усі', PR.length], ...Object.entries(PCATS).map(([k, v]) => [k, v, cnt[k] || 0])]
+    .map(([k, v, n]) => `<button class="chip ${k === pcat ? 'on' : ''}" data-c="${k}">${v}<em>${n}</em></button>`).join('');
+  $$('#pcats .chip').forEach(b => b.onclick = () => { pcat = b.dataset.c; renderProducts(); });
+  const rows = PR.filter(p => pcat === 'all' || p.category === pcat);
+  $('#plist').innerHTML = rows.length ? rows.map(p => `<div class="pc ${p.visible ? '' : 'off'}"><div class="ph" style="${p.photo ? `background-image:url('${esc(p.photo)}')` : ''}"></div>
+    <div class="b"><h3>${esc(p.title)}</h3><div class="m">${[p.memory, p.condition === 'used' ? 'б/в' : 'новий', PCATS[p.category]].filter(Boolean).map(esc).join(' · ')}</div>
+    ${p.note ? `<div class="m">${esc(p.note)}</div>` : ''}<div class="pr">${p.price != null ? money(p.price) : 'Ціна за запитом'}</div>
+    <div>${p.in_stock ? '<span class="ptag">в наявності</span>' : '<span class="ptag no">немає</span>'} ${p.visible ? '' : '<span class="ptag">прихований</span>'}</div>
+    <div class="act"><button class="btn sm ghost" data-pe="${p.id}">Змінити</button><button class="btn sm ghost" data-ps="${p.id}">${p.in_stock ? 'Продано' : 'Є в наявності'}</button></div></div></div>`).join('')
+    : '<div class="empty" style="grid-column:1/-1">Товарів поки немає. Натисніть «+ Додати товар» — він одразу з’явиться на сайті.</div>';
+  $$('[data-pe]').forEach(b => b.onclick = () => openP(PR.find(p => p.id == b.dataset.pe)));
+  $$('[data-ps]').forEach(b => b.onclick = async () => { const p = PR.find(x => x.id == b.dataset.ps);
+    const { error } = await sb.from('products').update({ in_stock: !p.in_stock }).eq('id', p.id);
+    if (error) return toast('Не вдалося: ' + error.message); p.in_stock = !p.in_stock; renderProducts(); toast('Збережено — вже на сайті'); });
+}
+function openP(p) {
+  pedit = p || null; pblob = null; $('#perr2').textContent = '';
+  $('#pdt').textContent = p ? 'Змінити товар' : 'Новий товар'; $('#pdel').classList.toggle('hide', !p);
+  $('#pc').value = p?.category || (pcat !== 'all' ? pcat : 'iphone'); $('#pt').value = p?.title || ''; $('#pm').value = p?.memory || '';
+  $('#ps').value = p?.condition || 'new'; $('#pp').value = p?.price ?? ''; $('#pn').value = p?.note || '';
+  $('#pi').checked = p ? p.in_stock : true; $('#pv').checked = p ? p.visible : true; $('#pph').value = ''; setPv(p?.photo); $('#pdlg').showModal();
+}
+function setPv(u) { $('#ppv').style.backgroundImage = u ? `url('${u}')` : ''; $('#ppv').textContent = u ? '' : 'Немає фото'; }
+$('#pph').onchange = async e => { const f = e.target.files[0]; if (!f) return; pblob = await shrink(f); setPv(URL.createObjectURL(pblob)); };
+$('#padd').onclick = () => openP(null);
+$('#pcancel').onclick = () => $('#pdlg').close();
+$('#pf2').onsubmit = async e => {
+  e.preventDefault(); $('#psave').disabled = true; $('#perr2').textContent = '';
+  try {
+    let photo = pedit?.photo || null;
+    if (pblob) { const path = SHOP + '/p-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7) + '.webp';
+      const { error } = await sb.storage.from('media').upload(path, pblob, { contentType: 'image/webp', cacheControl: '31536000' });
+      if (error) throw error; photo = sb.storage.from('media').getPublicUrl(path).data.publicUrl; }
+    const row = { shop: SHOP, category: $('#pc').value, title: $('#pt').value.trim(), memory: $('#pm').value.trim() || null, condition: $('#ps').value,
+      price: $('#pp').value === '' ? null : Math.round(+$('#pp').value), note: $('#pn').value.trim() || null, photo, in_stock: $('#pi').checked, visible: $('#pv').checked };
+    const { error } = pedit ? await sb.from('products').update(row).eq('id', pedit.id) : await sb.from('products').insert(row);
+    if (error) throw error; $('#pdlg').close(); toast('Збережено — вже на сайті'); loadProducts();
+  } catch (err) { $('#perr2').textContent = 'Не вдалося: ' + (err.message || err); }
+  $('#psave').disabled = false;
+};
+$('#pdel').onclick = async () => { if (!pedit || !confirm('Видалити «' + pedit.title + '»?')) return;
+  const { error } = await sb.from('products').delete().eq('id', pedit.id);
+  if (error) return $('#perr2').textContent = 'Не вдалося: ' + error.message; $('#pdlg').close(); toast('Видалено'); loadProducts(); };
+
+// ---------- settings ----------
+async function loadSettings() {
+  const { data } = await sb.from('settings').select('*').eq('shop', SHOP).maybeSingle();
+  if (data) { $('#tg-t').value = data.tg_token || ''; $('#tg-c').value = data.tg_chat || ''; }
+}
+$('#tg-s').onclick = async () => {
+  const { error } = await sb.from('settings').upsert({ shop: SHOP, tg_token: $('#tg-t').value.trim() || null, tg_chat: $('#tg-c').value.trim() || null });
+  toast(error ? 'Помилка: ' + error.message : 'Збережено');
+};
+$('#tg-x').onclick = async () => { const { error } = await sb.rpc('test_tg', { p_shop: SHOP }); toast(error ? 'Помилка: ' + error.message : 'Тест надіслано — перевірте Telegram'); };
+$('#csv').onclick = () => {
+  const cols = ['created_at','name','phone','device','service','wish_date','status','price','comment','notes','source'];
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const csv = '﻿' + [cols.join(';'), ...R.map(r => cols.map(k => q(k === 'status' ? ST[r.status] : r[k])).join(';'))].join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'mobikom-zayavky.csv'; a.click();
+};
+
+sb.auth.onAuthStateChange(() => {});
 boot();
 </script>
 </body>
